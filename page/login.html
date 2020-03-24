@@ -105,7 +105,7 @@
 				return false;
 			}
 			$.ajax({
-				url: "http://qiushile.top/EF/login",
+				url: "http://qiushile.top/EFPoject/login",
 				data: {
 					"name": data.username,
 					"pwd": data.password
@@ -116,7 +116,7 @@
 				success: function(data) {
 					if(data.code==0){
 						layer.msg('登录成功，请稍等', function () {
-						    window.location = 'http://qiushile.top/EFPoject/index.html';
+						    window.location = 'http://qiushile.top/EF/index.html';
 						});
 					}else{
 						layer.msg('账号密码错误');
