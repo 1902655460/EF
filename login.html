@@ -9,8 +9,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-	<link rel="icon" href="../images/eflog.ico">
-    <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
+	<link rel="icon" href="images/eflog.ico">
+    <link rel="stylesheet" href="lib/layui-v2.5.5/css/layui.css" media="all">
     <!--[if lt IE 9]>
     <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
@@ -63,10 +63,10 @@
         </div>
     </div>
 </div>
-<script src="../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
-<script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
-<script src="../lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
-<script src="../js/verificationCode.js" charset="utf-8"></script>
+<script src="lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script src="lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
+<script src="js/verificationCode.js" charset="utf-8"></script>
 <script>
 	var code;
     layui.use(['form'], function () {
@@ -115,9 +115,11 @@
 				type: 'post', //HTTP请求类型
 				timeout: 10000, //设置超时时间为10秒
 				success: function(data) {
-					if(data.code==0){
+					if(data.code!=-1){
 						layer.msg('登录成功，请稍等', function () {
-						    window.location = 'http://qiushile.top/EF/index.html?name='+name;
+						    window.location = 'http://qiushile.top/EF/index.html';
+							localStorage.setItem('name', name);
+							localStorage.setItem('code', data.code);
 						});
 					}else{
 						layer.msg('账号密码错误');

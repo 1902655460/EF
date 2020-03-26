@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<!-- <link rel="stylesheet" href="../../../../target/classes/static/css/layui.css"> -->
+	</head>
+	<body>
+		
+		<table id="tab" lay-filter="user" class="layui-hide"></table>
+	
+
+	<!--出入库隐藏界面-->
+	<div id="add2" style="display:none">
+		<form class="layui-form" style="position: relative;top: 10px;" id="for2">
+			<div class="layui-form-item">
+				<label class="layui-form-label">学生姓名</label>
+				<div class="layui-input-block">
+					<input type="text"  id="name2"  class="layui-input" style="width:200px">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">出入库数量</label>
+				<div class="layui-input-block">
+					<input type="text"  id="number2"  class="layui-input" style="width:200px">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">负责老师</label>
+				<div class="layui-input-block">
+					<input type="text"  id="tname"  class="layui-input" style="width:200px">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">SA</label>
+				<div class="layui-input-block">
+					<input type="text"  id="sa"  class="layui-input" style="width:200px">
+				</div>
+			</div>
+		</form>
+	</div>
+		
+		<script type="text/html" id="barDemo">
+			<a class="layui-btn layui-btn-xs data-count-edit" lay-event="sel">查看详情</a>
+			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+		</script>
+		<script type="text/html" id="toolbarDemo">
+		    <div class="layui-btn-container">
+		        <button class="layui-btn layui-btn-sm data-add-btn" lay-event="add"> 新增礼物 </button>
+		    </div>
+		</script>
+		</body>
+		<script src="../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<!-- <script src="../js/filterlog.js" charset="utf-8"></script> -->
+	<script th:inline="javascript">
+			//var url = "http://localhost:8888/EFPoject";
+			var url = "http://qiushile.top/EFPoject";
+			//获取url中的参数
+			   function getUrlParam(name) {
+			       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+			       var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+			       if (r != null) return unescape(r[2]); return null; //返回参数值
+			   }
+			   
+			   var xid = getUrlParam("id");
+		
+			layui.use(['table','form'], function() {
+				var table = layui.table;
+				var form = layui.form;
+		
+				table.render({
+					elem: '#tab',
+					url:url+"/selectGiftPage?xid="+xid,
+					page: true, //开启分页
+					cellMinWidth: 10,
+					height: 'full-40',
+					toolbar: '#toolbarDemo', //开启头部工具栏，并为其绑定左侧模板
+					defaultToolbar: [
+						{ //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+							title: '刷新',
+							layEvent: 'LAYTABLE_TIPS',
+							icon: 'layui-icon-refresh'
+						}
+					],
+					limit: 20,
+					cols: [
+						[ //表头
+
+							{field: 'id', title: 'ID',  sort: true},
+							{field: 'name',title: '礼物名'},
+							{field: 'number',title: '礼物数量'},
+							{field: 'cdate',title: '创建时间'},
+							{field: 'udate',title: '最近更新'},
+							{title: '操作',toolbar: '#barDemo',width: 140}
+						]
+					]
+				});
+
+				
+				//头工具栏事件表1
+				table.on('toolbar(user)', function(obj){
+					switch(obj.event){
+							//自定义头工具栏右侧图标 - 提示
+						case 'LAYTABLE_TIPS':
+							layui.table.reload('tab', {
+								url:url+"/selectGiftPage?xid="+xid,
+								//url: ''+/*[[@{/selectPage}]]*/+'',
+								toolbar: '#toolbarDemo',
+								page: {
+									curr: 1 //重新从第 1 页开始
+								}
+							});
+							break;
+						
+						case 'add':
+							var index = layer.open({
+							    title: '添加礼物',
+							    type: 2,
+							    shade: 0.2,
+							    maxmin:true,
+							    shadeClose: true,
+							    area: ['100%', '100%'],
+							    content: 'http://qiushile.top/EF/page/gift/giftadd.html?xid='+xid,
+							});
+							$(window).on("resize", function () {
+							    layer.full(index);
+							});
+							break;
+					};
+				});
+				
+				
+				//监听行工具事件表1
+					table.on('tool(user)', function(obj){
+						var data = obj.data;
+						//console.log(obj)
+						if(obj.event === 'del'){
+							layer.confirm('真的删除行么', function(index){
+								// obj.del();
+								//layer.msg(data.id)
+								layer.close(index);
+								$.ajax({
+									url:url+"/delGiftById",
+									//url:''+/*[[@{/delById}]]*/+'',
+									type : "post",
+									dataType : "json",
+									data :  {
+										id : data.id
+									},
+									success:function (dat) {
+										if(dat.code=="1"){
+											obj.del();
+											layer.msg("删除成功！");
+											layui.table.reload('tab', {
+												url:url+"/selectGiftPage?xid="+xid,
+												//url: ''+/*[[@{/selectPage}]]*/+'',
+												toolbar: '#toolbarDemo',
+												page: {
+													curr: 1 //重新从第 1 页开始
+												}
+											});
+										}else{
+											layer.msg("删除失败，请联系十亿少女的梦！");
+										}
+				
+									}
+								});
+							});
+						}else if(obj.event === 'sel'){
+							data.id
+							var index = layer.open({
+							    title: '礼物详情',
+							    type: 2,
+							    shade: 0.2,
+							    maxmin:true,
+							    shadeClose: true,
+							    area: ['100%', '100%'],
+							    content: 'http://qiushile.top/EF/page/gift/giftxq.html?id='+data.id,
+							});
+							$(window).on("resize", function () {
+							    layer.full(index);
+							});
+							
+						}
+					});
+						
+				});
+
+				
+		</script>
+	</body>
+</html>
