@@ -35,12 +35,12 @@
 						<input type="text" name="tname" class="layui-input">
 					</div>
 				</div>
-				<div class="layui-inline">
+				<!-- <div class="layui-inline">
 					<label class="layui-form-label">领取数量</label>
 					<div class="layui-input-inline">
 						<input type="text" name="cnumber" class="layui-input">
 					</div>
-				</div>
+				</div> -->
 				<div class="layui-inline">
 					<button type="submit" lay-filter="data-search-btn" lay-submit class="layui-btn layui-btn-sm data-add-btn"> 出库 </button>
 				</div>
@@ -134,7 +134,7 @@
 						dataType : "json",
 						data :  {
 							name : data.field.sname,
-							number : data.field.cnumber,
+							// number : data.field.cnumber,
 							tname : data.field.tname,
 							gid : id,
 							sa : localStorage.getItem('name')
